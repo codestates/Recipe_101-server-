@@ -18,8 +18,8 @@ export class FoodInfo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (userId) => userId.foodId)
-  userId!: User;
+  @ManyToOne((type) => User, (user) => user.foodInfo)
+  user!: User;
 
   @Column()
   foodName: string;
@@ -32,9 +32,6 @@ export class FoodInfo {
 
   @Column()
   type: string;
-
-  @Column()
-  phone: string;
 
   @Column()
   cooking_time: string;

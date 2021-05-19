@@ -49,6 +49,6 @@ export class User {
   @OneToMany((type) => Comment, (comment) => comment.user)
   comment!: Comment[];
 
-  @OneToMany((type) => FoodInfo, (foodId) => foodId.userId)
-  foodId!: FoodInfo[];
+  @OneToMany((type) => FoodInfo, (foodInfo) => foodInfo.user)
+  foodInfo!: FoodInfo[];
 }

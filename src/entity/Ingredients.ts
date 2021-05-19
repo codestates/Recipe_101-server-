@@ -18,6 +18,9 @@ export class Ingredients {
   foodInfo!: FoodInfo;
 
   @Column()
+  name: string;
+
+  @Column()
   type: string;
 
   @Column()
