@@ -16,9 +16,9 @@ createConnection()
     const foodRepo = connection.getRepository(FoodInfo);
     const recipeRepo = connection.getRepository(Recipe);
     const igrsRepo = connection.getRepository(Ingredients);
-    // const user = await userRepository.findOne({
-    //   where: { id: 2 },
-    // });
+    const user = await userRepository.findOne({
+      where: { id: 2 },
+    });
     let cmd = `http://211.237.50.150:7080/openapi/${API_KEY}/json/Grid_20150827000000000226_1/1/1000`;
     const Food_info = await axios.default
       .get(cmd)
