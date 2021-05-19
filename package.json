@@ -5,8 +5,11 @@
   "main": "src/app.js",
   "scripts": {
     "start": "nodemon --exec ts-node src/app.ts",
-    "start_db": "ts-node src/index.ts",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+    "make_db": "ts-node src/db.ts",
+    "make_seed": "ts-node src/seeduser.ts",
+    "test": "ts-node src/test.ts",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "generate": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:generate -n"
   },
   "repository": {
     "type": "git",

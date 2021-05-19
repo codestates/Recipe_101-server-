@@ -4,10 +4,25 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
+import { User } from "./User";
+import { FoodInfo } from "./FoodInfo";
 
 @Entity()
 export class Store {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne((type) => User, (user) => user.userStore)
+  user!: User;
+
+  @ManyToOne((type) => FoodInfo, (foodInfo) => foodInfo.foodStore)
+  foodInfo!: FoodInfo;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
