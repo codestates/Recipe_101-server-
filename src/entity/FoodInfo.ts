@@ -70,4 +70,10 @@ export class FoodInfo {
 
   @OneToMany((type) => Ingredients, (igrs) => igrs.foodInfo)
   igrs!: Ingredients[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
