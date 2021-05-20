@@ -14,7 +14,9 @@ export class Ingredients {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => FoodInfo, (foodInfo) => foodInfo.igrs)
+  @ManyToOne((type) => FoodInfo, (foodInfo) => foodInfo.igrs, {
+    onDelete: "CASCADE",
+  })
   foodInfo!: FoodInfo;
 
   @Column()
@@ -27,8 +29,8 @@ export class Ingredients {
   cap: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

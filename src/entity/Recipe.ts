@@ -14,7 +14,9 @@ export class Recipe {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => FoodInfo, (foodInfo) => foodInfo.recipes) // FoodInfoId
+  @ManyToOne((type) => FoodInfo, (foodInfo) => foodInfo.recipes, {
+    onDelete: "CASCADE",
+  }) // FoodInfoId
   foodInfo!: FoodInfo;
 
   @Column()
@@ -30,8 +32,8 @@ export class Recipe {
   step_tip: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

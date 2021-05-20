@@ -17,7 +17,7 @@ export class User {
   id: number;
 
   @Column()
-  userName: string;
+  username: string;
 
   @Column()
   password: string;
@@ -31,11 +31,14 @@ export class User {
   @Column()
   phone: string;
 
+  @Column()
+  userimage: string;
+
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   @OneToMany((type) => Ff, (follow) => follow.user)
   follow!: Ff[];
