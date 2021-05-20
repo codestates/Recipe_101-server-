@@ -22,7 +22,7 @@ createConnection()
     );
     app.use("/", controller);
 
-    app.listen(4000, () => {
+    app.listen(process.env.APP_PORT, () => {
       console.log("server running");
     });
   })
