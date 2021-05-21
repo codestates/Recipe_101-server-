@@ -55,9 +55,9 @@ export class FoodInfo {
   img_url: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   @OneToMany((type) => Store, (foodStore) => foodStore.foodInfo)
   foodStore!: Store[];

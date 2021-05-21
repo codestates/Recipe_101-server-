@@ -84,9 +84,7 @@ createConnection()
         });
       }
     }
-    return connection;
-  })
-  .then((connection) => {
+    console.log("end");
     connection.close();
   })
   .catch();
