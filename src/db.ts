@@ -55,9 +55,8 @@ createConnection()
         img_url: IMG_URL,
       });
     }
-    console.log(db);
     const Foods = await foodRepo.find();
-    console.log(Foods[0], db[1], Foods[db[1]]);
+
     for (let { RECIPE_ID, IRDNT_NM, IRDNT_CPCTY, IRDNT_TY_NM } of Items) {
       if (db[RECIPE_ID] !== undefined) {
         await igrsRepo.insert({
