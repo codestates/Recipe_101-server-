@@ -1,4 +1,6 @@
 import * as express from "express";
+import { getRepository } from "typeorm";
+import { Ff } from "../../entity/Ff";
 const router = express.Router();
 
 router.get("/", (req, res) => {

@@ -15,12 +15,12 @@ const ACCESS_SECRET: string = process.env.ACCESS_SECRET;
 const REFRESH_SECRET: string = process.env.REFRESH_SECRET;
 const router = express.Router();
 
-router.use("/users", users);
+router.use("/users", token, users);
 router.use("/recipe", recipe);
 router.use("/search", search);
-router.use("/password", password);
-router.use("/store", store);
-router.use("/subscribe", subscribe);
+router.use("/password", token, password);
+router.use("/store", token, store);
+router.use("/subscribe", token, subscribe);
 
 router.get("/", (req, res) => {
   res.send("ok");
