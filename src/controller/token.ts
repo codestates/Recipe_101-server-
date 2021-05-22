@@ -14,6 +14,7 @@ router.use("/", (req, res, next) => {
     req.headers["authorization"].split(" ").length === 2
       ? req.headers["authorization"].split(" ")[1]
       : undefined;
+  console.log(accessToken, refreshToken);
   if (!refreshToken) {
     res.status(401).send("Unauthorized");
   } else {
