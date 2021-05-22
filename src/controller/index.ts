@@ -33,7 +33,7 @@ router.post("/signin", (req, res) => {
     })
     .then((rst) => {
       crypto.pbkdf2(
-        req.body.username,
+        req.body.password,
         rst.password2,
         121234,
         64,
