@@ -15,7 +15,7 @@ const ACCESS_SECRET: string = process.env.ACCESS_SECRET;
 const REFRESH_SECRET: string = process.env.REFRESH_SECRET;
 const router = express.Router();
 
-router.use("/users", token, users);
+router.use("/user", token, users);
 router.use("/recipe", recipe);
 router.use("/search", search);
 router.use("/password", token, password);
