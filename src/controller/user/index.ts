@@ -7,14 +7,14 @@ router.get("/", (req, res) => {
   getRepository(User)
     .findOne({
       select: [
-        "username",
+        "userName",
         "email",
         "phone",
-        "userimage",
+        "userImage",
         "createdAt",
         "updatedAt",
       ],
-      where: { id: res.locals.id, username: res.locals.username },
+      where: { id: res.locals.id, userName: res.locals.username },
     })
     .then((rst) => {
       res.status(200).json({
@@ -43,12 +43,12 @@ router.patch("/", (req, res) => {
 router.delete("/", (req, res) => {
   getRepository(User)
     .update(res.locals.id, {
-      username: "deleted username",
+      userName: "deleted username",
       password: "",
       password2: "",
       email: "",
       phone: "",
-      userimage: "",
+      userImage: "",
     })
     .then((rst) => {
       res.clearCookie("refreshToken");

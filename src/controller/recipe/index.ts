@@ -1,6 +1,10 @@
 import * as express from "express";
 import { getRepository } from "typeorm";
 import { FoodInfo } from "../../entity/FoodInfo";
+import { Ingredients } from "../../entity/Ingredients";
+import { Recipe } from "../../entity/Recipe";
+import { User } from "../../entity/User";
+import token from "../token";
 const router = express.Router();
 
 router.get("/:id", (req, res) => {
@@ -11,16 +15,16 @@ router.get("/:id", (req, res) => {
     })
     .then((rst) => {
       let {
-        id: food_id,
-        foodName: food_name,
+        id,
+        foodName,
         summary,
         nation,
         type,
-        cooking_time,
+        cookingTime,
         calorie,
         qnt,
         level,
-        img_url: food_img,
+        imgUrl,
         createdAt,
         updatedAt,
         igrs,
@@ -31,23 +35,23 @@ router.get("/:id", (req, res) => {
         return { name, type, cap };
       });
       let Recipes = recipes.map(
-        ({ cooking_no, cooking_dc, step_image, step_tip }) => {
-          return { cooking_no, cooking_dc, step_image, step_tip };
+        ({ cookingNo, cookingDc, stepImage, stepTip }) => {
+          return { cookingNo, cookingDc, stepImage, stepTip };
         }
       );
 
       let food_info = {
-        food_id,
-        user_id: user.id,
-        food_name,
+        id,
+        userId: user.id,
+        foodName,
         summary,
         nation,
         type,
-        cooking_time,
+        cookingTime,
         calorie,
         qnt,
         level,
-        food_img,
+        imgUrl,
         createdAt,
         updatedAt,
       };
@@ -61,14 +65,94 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
-  res.send("new recipe");
+router.post("/", token, (req, res) => {
+  getRepository(User)
+    .findOne({ where: { id: res.loacls.id } })
+    .then((rst) => {
+      return getRepository(FoodInfo).insert({
+        imgUrl: "",
+        user: rst,
+        ...req.body.Food_info,
+      });
+    })
+    .then((rst) => {
+      return getRepository(FoodInfo).findOne({
+        where: { id: rst.identifiers[0].id },
+      });
+    })
+    .then((rst) => {
+      let igrss = req.body.Ingredients.map((x) => {
+        return { ...x, foodInfo: rst };
+      });
+
+      return getRepository(Ingredients).insert(igrss);
+    })
+    .then((rst) => {
+      return getRepository(Ingredients).findOne({
+        relations: ["foodInfo"],
+        where: { id: rst.identifiers[0].id },
+      });
+    })
+    .then((rst) => {
+      let recipess = req.body.Recipe.map((x) => {
+        return { ...x, foodInfo: rst.foodInfo };
+      });
+      return getRepository(Recipe).insert(recipess);
+    })
+    .then((rst) => {
+      res.status(200).json({ message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
-router.patch("/", (req, res) => {
-  res.send("update recipe");
+router.patch("/:id", token, (req, res) => {
+  getRepository(FoodInfo)
+    .update(req.params.id, { ...req.body.Food_info })
+    .then((rst) => {
+      return getRepository(Recipe).delete({
+        foodInfo: { id: req.params.id },
+      });
+    })
+    .then((rst) => {
+      return getRepository(Ingredients).delete({
+        foodInfo: { id: req.params.id },
+      });
+    })
+    .then((rst) => {
+      return getRepository(FoodInfo).findOne(req.params.id);
+    })
+    .then((rst) => {
+      let recipess = req.body.Recipe.map((x) => {
+        return { ...x, foodInfo: rst };
+      });
+      return getRepository(Recipe).insert(recipess);
+    })
+    .then((rst) => {
+      return getRepository(FoodInfo).findOne(req.params.id);
+    })
+    .then((rst) => {
+      let igrss = req.body.Ingredients.map((x) => {
+        return { ...x, foodInfo: rst };
+      });
+      return getRepository(Ingredients).insert(igrss);
+    })
+    .then((rst) => {
+      res.status(200).json({ message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
-router.delete("/", (req, res) => {
-  res.send("delete recipe");
+router.delete("/:id", token, (req, res) => {
+  getRepository(FoodInfo)
+    .delete(req.params.id)
+    .then((rst) => {
+      res.status(200).json({ message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
 
 export default router;

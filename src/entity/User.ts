@@ -17,7 +17,7 @@ export class User {
   id: number;
 
   @Column()
-  username: string;
+  userName: string;
 
   @Column()
   password: string;
@@ -32,7 +32,7 @@ export class User {
   phone: string;
 
   @Column()
-  userimage: string;
+  userImage: string;
 
   @CreateDateColumn()
   createdAt: Date;
