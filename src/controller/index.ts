@@ -1,4 +1,4 @@
-require("dotenv").config();
+import "dotenv/config";
 import { getRepository } from "typeorm";
 import * as express from "express";
 import * as crypto from "crypto";
@@ -58,7 +58,7 @@ router.post("/signin", (req, res) => {
               maxAge: 24 * 6 * 60 * 10000,
               sameSite: "none",
               httpOnly: true,
-              //              secure: true,
+              secure: true,
             });
             res.status(200).json({
               data: {

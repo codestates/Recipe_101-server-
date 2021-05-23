@@ -15,7 +15,7 @@ username.get("/:name", (req, res) => {
       "f.level AS level",
       "f.cooking_time AS cooking_time",
     ])
-    .where({ username: "public_data_portal" })
+    .where({ username: req.params.name })
     .execute()
     .then((rst) => {
       res.status(200).json({ data: { recipe: rst }, message: "ok" });

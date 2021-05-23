@@ -1,4 +1,4 @@
-require("dotenv").config();
+import "dotenv/config";
 import * as express from "express";
 import { sign, verify } from "jsonwebtoken";
 import { getRepository } from "typeorm";
