@@ -6,6 +6,7 @@ import users from "./user/index";
 import recipe from "./recipe/index";
 import search from "./search/index";
 import password from "./password/index";
+import comment from "./comment/index";
 import store from "./store/index";
 import subscribe from "./subscribe/index";
 import { User } from "../entity/User";
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.use("/user", token, users);
 router.use("/recipe", recipe);
+router.use("/comment", comment);
 router.use("/search", search);
 router.use("/password", token, password);
 router.use("/store", token, store);
