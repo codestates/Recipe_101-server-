@@ -1,18 +1,81 @@
 import * as express from "express";
 import { getRepository } from "typeorm";
 import { Ff } from "../../entity/Ff";
+import { User } from "../../entity/User";
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("get subscribe info");
+router.get("/:name", (req, res) => {
+  getRepository(User)
+    .findOne({
+      where: { userName: req.params.name },
+    })
+    .then((rst) => {
+      return getRepository(Ff).find({
+        relations: ["target", "user"],
+        where: { user: { id: rst.id } },
+      });
+    })
+    .then((rst) => {
+      let follow = rst.map((x) => {
+        return x.target.userName;
+      });
+      res.status(200).json({
+        users: [...follow],
+        meassge: "ok",
+      });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
 
 router.post("/", (req, res) => {
-  res.send("new subscribe");
+  getRepository(User)
+    .find({
+      where: [
+        { userName: res.locals.username },
+        { userName: req.body.username },
+      ],
+    })
+    .then((rst) => {
+      let user = rst[0],
+        target = rst[1];
+      if (user.userName === req.body.username) {
+        [target, user] = [user, target];
+      }
+      return getRepository(Ff).insert({ user: user, target: target });
+    })
+    .then((rst) => {
+      res.status(200).json({ message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
 
 router.delete("/", (req, res) => {
-  res.send("no subscribe");
+  getRepository(User)
+    .find({
+      where: [
+        { userName: res.locals.username },
+        { userName: req.body.username },
+      ],
+    })
+    .then((rst) => {
+      let user = rst[0],
+        target = rst[1];
+      if (user.userName === req.body.username) {
+        [target, user] = [user, target];
+      }
+      return getRepository(Ff).delete({ user: user, target: target });
+    })
+    .then((rst) => {
+      res.status(200).json({ message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
 
 export default router;
