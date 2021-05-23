@@ -46,13 +46,13 @@ createConnection()
         summary: SUMRY,
         nation: NATION_NM,
         type: TY_NM,
-        cooking_time: COOKING_TIME,
+        cookingTime: COOKING_TIME,
         calorie: CALORIE,
         qnt: QNT,
         level: LEVEL_NM,
-        IRDNT_code: IRDNT_CODE,
+        irdntCode: IRDNT_CODE,
         price: PC_NM,
-        img_url: IMG_URL,
+        imgUrl: IMG_URL,
       });
     }
     const Foods = await foodRepo.find();
@@ -77,10 +77,10 @@ createConnection()
       if (db[RECIPE_ID] !== undefined) {
         await recipeRepo.insert({
           foodInfo: Foods[db[RECIPE_ID]],
-          cooking_no: COOKING_NO,
-          cooking_dc: COOKING_DC,
-          step_image: STRE_STEP_IMAGE_URL,
-          step_tip: STEP_TIP,
+          cookingNo: COOKING_NO,
+          cookingDc: COOKING_DC,
+          stepImage: STRE_STEP_IMAGE_URL,
+          stepTip: STEP_TIP,
         });
       }
     }

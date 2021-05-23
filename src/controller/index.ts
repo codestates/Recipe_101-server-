@@ -29,7 +29,7 @@ router.get("/", (req, res) => {
 router.post("/signin", (req, res) => {
   getRepository(User)
     .findOne({
-      where: { username: req.body.username },
+      where: { userName: req.body.username },
     })
     .then((rst) => {
       crypto.pbkdf2(
@@ -39,16 +39,17 @@ router.post("/signin", (req, res) => {
         64,
         "sha512",
         (err, key) => {
+          console.log(rst.password, key.toString("base64"));
           if (rst.password === key.toString("base64")) {
             const accesstoken = sign(
-              { id: rst.id, username: rst.username },
+              { id: rst.id, username: rst.userName },
               ACCESS_SECRET,
               {
                 expiresIn: "30m",
               }
             );
             const refreshtoken = sign(
-              { id: rst.id, username: rst.username },
+              { id: rst.id, username: rst.userName },
               REFRESH_SECRET,
               {
                 expiresIn: "24h",
@@ -58,16 +59,16 @@ router.post("/signin", (req, res) => {
               maxAge: 24 * 6 * 60 * 10000,
               sameSite: "none",
               httpOnly: true,
-              secure: true,
+              // secure: true,
             });
             res.status(200).json({
               data: {
                 accessToken: accesstoken,
                 userinfo: {
-                  username: rst.username,
+                  username: rst.userName,
                   email: rst.email,
                   phone: rst.phone,
-                  userimage: rst.userimage,
+                  userimage: rst.userImage,
                   createdAt: rst.createdAt,
                 },
               },
@@ -99,12 +100,12 @@ router.post("/signup", (req, res) => {
       (err, key) => {
         getRepository(User)
           .insert({
-            username: req.body.username,
+            userName: req.body.username,
             password: key.toString("base64"),
             password2: buf.toString("base64"),
             email: req.body.email,
             phone: req.body.phone,
-            userimage: req.body.userimage ? req.body.userimage : "",
+            userImage: req.body.userimage ? req.body.userimage : "",
           })
           .then((rst) => {
             const accesstoken = sign(

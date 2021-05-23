@@ -34,7 +34,7 @@ export class FoodInfo {
   type: string;
 
   @Column()
-  cooking_time: string;
+  cookingTime: string;
 
   @Column()
   calorie: string;
@@ -46,13 +46,13 @@ export class FoodInfo {
   level: string;
 
   @Column()
-  IRDNT_code: string;
+  irdntCode: string;
 
   @Column()
   price: string;
 
   @Column()
-  img_url: string;
+  imgUrl: string;
 
   @CreateDateColumn()
   createdAt: Date;

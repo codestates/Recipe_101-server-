@@ -20,16 +20,16 @@ export class Recipe {
   foodInfo!: FoodInfo;
 
   @Column()
-  cooking_no: number;
+  cookingNo: number;
 
   @Column()
-  cooking_dc: string;
+  cookingDc: string;
 
   @Column()
-  step_image: string;
+  stepImage: string;
 
   @Column()
-  step_tip: string;
+  stepTip: string;
 
   @CreateDateColumn()
   createdAt: Date;

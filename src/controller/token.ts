@@ -44,6 +44,7 @@ router.use("/", (req, res, next) => {
               res.status(401).send("Invalid token. please signin again ");
             }
           } else {
+            console.log(decode, decode2);
             if (
               decode.id === decode2.id &&
               decode.username === decode2.username
@@ -52,7 +53,7 @@ router.use("/", (req, res, next) => {
                 .findOne({
                   where: {
                     id: decode.id,
-                    username: decode.username,
+                    userName: decode.username,
                   },
                 })
                 .then((rst) => {
