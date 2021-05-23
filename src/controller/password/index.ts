@@ -15,8 +15,6 @@ router.post("/", (req, res) => {
         64,
         "sha512",
         (err, key) => {
-          console.log(rst.password2);
-          console.log(rst.password, key.toString("base64"));
           if (rst.password === key.toString("base64")) {
             res.status(200).json({ message: "ok" });
           } else {
