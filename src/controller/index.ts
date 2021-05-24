@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { getRepository } from "typeorm";
+import { getRepository, ReturningStatementNotSupportedError } from "typeorm";
 import * as express from "express";
 import * as crypto from "crypto";
 import users from "./user/index";
@@ -12,7 +12,10 @@ import subscribe from "./subscribe/index";
 import { User } from "../entity/User";
 import { sign } from "jsonwebtoken";
 import token from "./token";
+import * as fs from "fs";
 import multer = require("multer");
+const mime = require("mime-types");
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
@@ -155,6 +158,18 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
           });
       }
     );
+  });
+});
+
+router.get("/image/:url", (req, res) => {
+  let type = mime.lookup(req.params.url);
+  fs.readFile("./img/" + req.params.url, (err, data) => {
+    if (err) {
+      res.status(400).send("fail");
+    } else {
+      res.writeHead(200, { "Content-Type": type });
+      res.status(200).send(data);
+    }
   });
 });
 
