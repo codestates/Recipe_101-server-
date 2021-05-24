@@ -162,12 +162,13 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
 });
 
 router.get("/image/:url", (req, res) => {
-  let type = mime.lookup(req.params.url);
   fs.readFile("./img/" + req.params.url, (err, data) => {
     if (err) {
       res.status(400).send("fail");
     } else {
-      res.writeHead(200, { "Content-Type": type });
+      let type = mime.lookup(req.params.url);
+      console.log(type, req.params.url);
+      res.set({ "Content-Type": type });
       res.status(200).send(data);
     }
   });
