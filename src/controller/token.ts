@@ -18,7 +18,7 @@ router.use("/", (req, res, next) => {
   if (!refreshToken) {
     res.status(401).send("Unauthorized");
   } else {
-    verify(refreshToken, REFRESH_SECRET, (err, decode) => {
+    verify(refreshToken, REFRESH_SECRET, (err, decode: any) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
           res.status(401).send("RefreshToken expired. please signin again ");
@@ -26,7 +26,7 @@ router.use("/", (req, res, next) => {
           res.status(401).send("Invalid token. please signin again ");
         }
       } else {
-        verify(accessToken, ACCESS_SECRET, (err, decode2) => {
+        verify(accessToken, ACCESS_SECRET, (err, decode2: any) => {
           if (err) {
             if (err.name === "TokenExpiredError") {
               const accessToken = sign(

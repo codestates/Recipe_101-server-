@@ -12,6 +12,17 @@ import subscribe from "./subscribe/index";
 import { User } from "../entity/User";
 import { sign } from "jsonwebtoken";
 import token from "./token";
+import multer = require("multer");
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "./img/");
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
+    },
+  }),
+});
 const ACCESS_SECRET: string = process.env.ACCESS_SECRET;
 const REFRESH_SECRET: string = process.env.REFRESH_SECRET;
 const router = express.Router();
@@ -91,7 +102,7 @@ router.get("/signout", token, (req, res) => {
   res.clearCookie("refreshToken");
   res.send("signout");
 });
-router.post("/signup", (req, res) => {
+router.post("/signup", upload.single("userImage"), (req, res) => {
   crypto.randomBytes(64, (err, buf) => {
     crypto.pbkdf2(
       req.body.password,
@@ -100,14 +111,21 @@ router.post("/signup", (req, res) => {
       64,
       "sha512",
       (err, key) => {
+        let data = {
+          userName: req.body.username,
+          password: key.toString("base64"),
+          password2: buf.toString("base64"),
+          email: req.body.email,
+          phone: req.body.phone,
+          userImage: "",
+        };
+        if (req.file) {
+          data["userImage"] = req.file.filename;
+        }
+
         getRepository(User)
           .insert({
-            userName: req.body.username,
-            password: key.toString("base64"),
-            password2: buf.toString("base64"),
-            email: req.body.email,
-            phone: req.body.phone,
-            userImage: req.body.userimage ? req.body.userimage : "",
+            ...data,
           })
           .then((rst) => {
             const accesstoken = sign(
@@ -140,6 +158,21 @@ router.post("/signup", (req, res) => {
   });
 });
 
-router.get("/refresh", (req, res) => {});
+router.post(
+  "/dummy",
+  upload.fields([
+    { name: "userImage", maxCount: 1 },
+    { name: "stepImage", maxCount: 5 },
+  ]),
+  (req, res) => {
+    console.log({ ...req.body });
+    //  console.log(req.body);
+    if (req.files) {
+      console.log(req.files);
+    }
+    res.send("dummy");
+    // 정상적으로 완료됨
+  }
+);
 
 export default router;
