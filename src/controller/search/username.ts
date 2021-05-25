@@ -11,9 +11,9 @@ username.get("/:name", (req, res) => {
     .select([
       "f.id AS food_id",
       "f.foodName AS food_name",
-      "f.img_url AS food_img",
+      "f.imgUrl AS food_img",
       "f.level AS level",
-      "f.cooking_time AS cooking_time",
+      "f.cookingTime AS cooking_time",
     ])
     .where({ username: req.params.name })
     .execute()

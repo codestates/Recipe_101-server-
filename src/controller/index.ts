@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { getRepository, ReturningStatementNotSupportedError } from "typeorm";
+import { getRepository } from "typeorm";
 import * as express from "express";
 import * as crypto from "crypto";
 import users from "./user/index";
@@ -10,6 +10,8 @@ import comment from "./comment/index";
 import store from "./store/index";
 import subscribe from "./subscribe/index";
 import { User } from "../entity/User";
+import { FoodInfo } from "../entity/FoodInfo";
+import { Store } from "../entity/Store";
 import { sign } from "jsonwebtoken";
 import token from "./token";
 import * as fs from "fs";
@@ -40,6 +42,86 @@ router.use("/subscribe", token, subscribe);
 
 router.get("/", (req, res) => {
   res.send("ok");
+});
+
+router.get("/signout", token, (req, res) => {
+  res.clearCookie("refreshToken");
+  res.send("signout");
+});
+
+router.get("/image/:url", (req, res) => {
+  fs.readFile("./img/" + req.params.url, (err, data) => {
+    if (err) {
+      res.status(400).send("fail");
+    } else {
+      let type = mime.lookup(req.params.url);
+      res.set({ "Content-Type": type });
+      res.status(200).send(data);
+    }
+  });
+});
+
+router.get("/recent/:num", (req, res) => {
+  let num = Number(req.params.num);
+  getRepository(FoodInfo)
+    .find({
+      select: ["id", "foodName", "cookingTime", "level", "imgUrl"],
+      order: { id: "DESC" },
+      take: num,
+    })
+    .then((rst) => {
+      let nrst = rst.map((x) => {
+        return {
+          food_id: x.id,
+          food_name: x.foodName,
+          food_img: x.imgUrl,
+          level: x.level,
+          cooking_time: x.cookingTime,
+        };
+      });
+      res.status(200).json({ data: { recipe: nrst }, message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
+});
+
+router.get("/recommend/:num", (req, res) => {
+  let num = Number(req.params.num);
+
+  getRepository(FoodInfo)
+    .createQueryBuilder("f")
+    .leftJoinAndSelect(
+      (sub) => {
+        return sub
+          .from(FoodInfo, "f")
+          .addFrom(Store, "s")
+          .where("f.id = s.foodInfoId")
+          .groupBy("f.id")
+          .select("f.id", "id")
+          .addSelect("COUNT(s.id)", "count");
+      },
+      "dummy",
+      "f.id= dummy.id"
+    )
+    .select([
+      "f.id AS food_id",
+      "f.foodName AS food_name",
+      "f.imgUrl AS food_img",
+      "f.level AS level",
+      "f.cookingTime AS cooking_time",
+      "count AS count",
+    ])
+    .orderBy("count", "DESC")
+    .addOrderBy("f.foodName", "ASC")
+    .limit(num)
+    .execute()
+    .then((rst) => {
+      res.status(200).json({ data: { recipe: rst }, message: "ok" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
 
 router.post("/signin", (req, res) => {
@@ -101,10 +183,6 @@ router.post("/signin", (req, res) => {
     });
 });
 
-router.get("/signout", token, (req, res) => {
-  res.clearCookie("refreshToken");
-  res.send("signout");
-});
 router.post("/signup", upload.single("userImage"), (req, res) => {
   crypto.randomBytes(64, (err, buf) => {
     crypto.pbkdf2(
@@ -158,19 +236,6 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
           });
       }
     );
-  });
-});
-
-router.get("/image/:url", (req, res) => {
-  fs.readFile("./img/" + req.params.url, (err, data) => {
-    if (err) {
-      res.status(400).send("fail");
-    } else {
-      let type = mime.lookup(req.params.url);
-      console.log(type, req.params.url);
-      res.set({ "Content-Type": type });
-      res.status(200).send(data);
-    }
   });
 });
 
