@@ -15,7 +15,10 @@ import { Store } from "../entity/Store";
 import { sign } from "jsonwebtoken";
 import token from "./token";
 import * as fs from "fs";
+import axios from "axios";
 import multer = require("multer");
+import { URLSearchParams } from "url";
+axios.defaults.withCredentials = true;
 const mime = require("mime-types");
 
 const upload = multer({
@@ -237,6 +240,68 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
       }
     );
   });
+});
+
+router.post("/kakao", (req, res) => {
+  axios.defaults.withCredentials = true;
+  const code = req.body.code;
+  const data = new URLSearchParams();
+  data.append("grant_type", "authorization_code");
+  data.append("client_id", `${process.env.KAKAO_CLIENT_ID}`);
+  data.append("redirect_uri", `${process.env.KAKAO_REDIRECT_URL}`);
+  data.append("code", `${code}`);
+  let userInfo = {
+    userName: "",
+    password: "",
+    password2: "",
+    email: "",
+    phone: "",
+    userImage: "",
+  };
+  let AccessToken: string = "",
+    RefreshToken: string = "";
+  axios
+    .post("https://kauth.kakao.com/oauth/token", data, {
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      },
+    })
+    .then((rst) => {
+      let { access_token, refresh_token } = rst.data;
+      [AccessToken, RefreshToken] = [access_token, refresh_token];
+      res.cookie(`refreshToken=${refresh_token};`, "set Cookie", {
+        maxAge: 24 * 6 * 60 * 10000,
+        sameSite: "none",
+        httpOnly: true,
+        // secure: true,
+      });
+      return axios.get("https://kapi.kakao.com/v2/user/me", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-type": "application/x-www-form-urlencoded; charset=utf-8",
+        },
+      });
+    })
+    .then((rst) => {
+      userInfo["userName"] = rst.data.properties.nickname;
+      userInfo["userImage"] = rst.data.properties.profile_image;
+
+      return getRepository(User).insert({
+        ...userInfo,
+      });
+    })
+    .then((rst) => {
+      res.status(200).json({
+        data: {
+          accessToken: AccessToken,
+          userinfo: userInfo,
+        },
+        message: "ok",
+      });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
+    });
 });
 
 router.post(
