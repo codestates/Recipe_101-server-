@@ -286,15 +286,32 @@ router.post("/kakao", (req, res) => {
       userInfo["userName"] = rst.data.properties.nickname;
       userInfo["userImage"] = rst.data.properties.profile_image;
 
-      return getRepository(User).insert({
-        ...userInfo,
-      });
+      return getRepository(User)
+        .findOneOrFail({
+          where: { userName: rst.data.properties.nickname },
+        })
+        .catch((rst) => {
+          return getRepository(User)
+            .insert({
+              ...userInfo,
+            })
+            .then((rst) => {
+              return userInfo;
+            });
+        });
     })
     .then((rst) => {
+      let data = {
+        userName: rst.userName,
+        email: rst.email,
+        phone: rst.phone,
+        userImage: rst.userImage,
+      };
+
       res.status(200).json({
         data: {
           accessToken: AccessToken,
-          userinfo: userInfo,
+          userinfo: data,
         },
         message: "ok",
       });
