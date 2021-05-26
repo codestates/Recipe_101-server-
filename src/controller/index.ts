@@ -302,10 +302,10 @@ router.post("/kakao", (req, res) => {
     })
     .then((rst) => {
       let data = {
-        userName: rst.userName,
+        username: rst.userName,
         email: rst.email,
         phone: rst.phone,
-        userImage: rst.userImage,
+        userimage: rst.userImage,
       };
 
       res.status(200).json({
