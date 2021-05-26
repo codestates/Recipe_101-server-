@@ -29,13 +29,9 @@ router.use("/", (req, res, next) => {
         verify(accessToken, ACCESS_SECRET, (err, decode2: any) => {
           if (err) {
             if (err.name === "TokenExpiredError") {
-              const accessToken = sign(
-                { id: decode.id, username: decode.username },
-                ACCESS_SECRET,
-                {
-                  expiresIn: "30m",
-                }
-              );
+              const accessToken = sign({ id: decode.id }, ACCESS_SECRET, {
+                expiresIn: "30m",
+              });
               res.status(200).json({
                 data: { accessToken },
                 message: "give new token",
@@ -44,20 +40,15 @@ router.use("/", (req, res, next) => {
               res.status(401).send("Invalid token. please signin again ");
             }
           } else {
-            console.log(decode, decode2);
-            if (
-              decode.id === decode2.id &&
-              decode.username === decode2.username
-            ) {
+            if (decode.id === decode2.id) {
               getRepository(User)
                 .findOne({
                   where: {
                     id: decode.id,
-                    userName: decode.username,
                   },
                 })
                 .then((rst) => {
-                  res.locals = { id: decode.id, username: decode.username };
+                  res.locals = { id: rst.id, username: rst.userName };
                   next();
                 })
                 .catch((err) => {
