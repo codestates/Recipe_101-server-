@@ -283,12 +283,12 @@ router.post("/kakao", (req, res) => {
       });
     })
     .then((rst) => {
-      userInfo["userName"] = rst.data.properties.nickname;
+      userInfo["userName"] = rst.data.id;
       userInfo["userImage"] = rst.data.properties.profile_image;
 
       return getRepository(User)
         .findOneOrFail({
-          where: { userName: rst.data.properties.nickname },
+          where: { userName: rst.data.id },
         })
         .catch((rst) => {
           return getRepository(User)

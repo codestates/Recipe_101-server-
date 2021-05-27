@@ -41,7 +41,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.patch("/", (req, res) => {
+router.patch("/", upload.single("userImage"), (req, res) => {
   let data = { ...req.body };
   if (req.file) {
     data["userImage"] = req.file.filename;
