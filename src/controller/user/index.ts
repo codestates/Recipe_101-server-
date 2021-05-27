@@ -45,33 +45,50 @@ router.get("/", (req, res) => {
 router.patch("/", upload.single("userImage"), (req, res) => {
   let data = { ...req.body };
 
-  crypto.randomBytes(64, (err, buf) => {
-    crypto.pbkdf2(
-      req.body.password,
-      buf.toString("base64"),
-      121234,
-      64,
-      "sha512",
-      (err, key) => {
-        let data = {
-          ...req.body,
-          password: key.toString("base64"),
-          password2: buf.toString("base64"),
-        };
-        if (req.file) {
-          data["userImage"] = req.file.filename;
+  if (req.body.password) {
+    crypto.randomBytes(64, (err, buf) => {
+      crypto.pbkdf2(
+        req.body.password,
+        buf.toString("base64"),
+        121234,
+        64,
+        "sha512",
+        (err, key) => {
+          let data = {
+            ...req.body,
+            password: key.toString("base64"),
+            password2: buf.toString("base64"),
+          };
+          if (req.file) {
+            data["userImage"] = req.file.filename;
+          }
+          getRepository(User)
+            .update(res.locals.id, { ...data })
+            .then((rst) => {
+              res.status(200).json({ message: "information updated" });
+            })
+            .catch((err) => {
+              res.status(400).send("fail");
+            });
         }
-        getRepository(User)
-          .update(res.locals.id, { ...data })
-          .then((rst) => {
-            res.status(200).json({ message: "information updated" });
-          })
-          .catch((err) => {
-            res.status(400).send("fail");
-          });
-      }
-    );
-  });
+      );
+    });
+  } else {
+    let data = {
+      ...req.body,
+    };
+    if (req.file) {
+      data["userImage"] = req.file.filename;
+    }
+    getRepository(User)
+      .update(res.locals.id, { ...data })
+      .then((rst) => {
+        res.status(200).json({ message: "information updated" });
+      })
+      .catch((err) => {
+        res.status(400).send("fail");
+      });
+  }
 });
 
 router.delete("/", (req, res) => {
