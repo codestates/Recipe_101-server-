@@ -160,7 +160,7 @@ router.post("/signin", (req, res) => {
               maxAge: 24 * 6 * 60 * 10000,
               sameSite: "none",
               httpOnly: true,
-              // secure: true,
+              secure: true,
             });
             res.status(200).json({
               data: {
@@ -273,7 +273,7 @@ router.post("/kakao", (req, res) => {
         maxAge: 24 * 6 * 60 * 10000,
         sameSite: "none",
         httpOnly: true,
-        // secure: true,
+        secure: true,
       });
       return axios.get("https://kapi.kakao.com/v2/user/me", {
         headers: {
