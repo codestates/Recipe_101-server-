@@ -176,13 +176,13 @@ router.post("/signin", (req, res) => {
               message: "ok",
             });
           } else {
-            res.status(403).send("fail");
+            res.status(403).send("비밀번호가 일치하지 않습니다.");
           }
         }
       );
     })
     .catch((err) => {
-      res.status(403).send("fail");
+      res.status(403).send("아이디가 없습니다.");
     });
 });
 

@@ -7,7 +7,7 @@ const username = express.Router();
 username.get("/:name", (req, res) => {
   getRepository(User)
     .createQueryBuilder("u")
-    .innerJoinAndSelect(FoodInfo, "f")
+    .innerJoinAndSelect(FoodInfo, "f", "u.id = f.userId")
     .select([
       "f.id AS food_id",
       "f.foodName AS food_name",
@@ -15,7 +15,7 @@ username.get("/:name", (req, res) => {
       "f.level AS level",
       "f.cookingTime AS cooking_time",
     ])
-    .where({ username: req.params.name })
+    .where({ userName: req.params.name })
     .execute()
     .then((rst) => {
       res.status(200).json({ data: { recipe: rst }, message: "ok" });
