@@ -113,6 +113,7 @@ router.get("/recommend/:num", (req, res) => {
       "f.imgUrl AS food_img",
       "f.level AS level",
       "f.cookingTime AS cooking_time",
+      "f.summary AS summary",
       "count AS count",
     ])
     .orderBy("count", "DESC")
