@@ -88,7 +88,7 @@ router.post(
         return getRepository(FoodInfo).insert({
           imgUrl: req.files ? req.files["foodImage"][0].filename : "",
           user: rst,
-          ...req.body.Food_info,
+          ...JSON.parse(req.body.Food_info),
         });
       })
       .then((rst) => {
@@ -97,7 +97,7 @@ router.post(
         });
       })
       .then((rst) => {
-        let igrss = req.body.Ingredients.map((x) => {
+        let igrss = JSON.parse(req.body.Ingredients).map((x) => {
           return { ...x, foodInfo: rst };
         });
 
@@ -110,11 +110,11 @@ router.post(
         });
       })
       .then((rst) => {
-        let recipess = req.body.Recipe.map((x, i) => {
+        let recipess = JSON.parse(req.body.Recipe).map((x, i) => {
           let stepImage = "";
           if (req.files) {
-            stepImage = req.files["stepImage"]
-              ? req.files["stepImage"][i].filename
+            stepImage = req.files["stepImages"]
+              ? req.files["stepImages"][i].filename
               : "";
           }
           return { ...x, foodInfo: rst.foodInfo, stepImage };
@@ -125,6 +125,7 @@ router.post(
         res.status(200).json({ message: "ok" });
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).send("fail");
       });
   }
@@ -137,13 +138,13 @@ router.patch(
     let food_info = {};
     try {
       food_info = {
-        ...req.body.Food_info,
+        ...JSON.parse(req.body.Food_info),
         imgUrl: req.files["foodImage"][0].filename,
       };
     } catch {
-      food_info = { ...req.body.Food_info };
+      food_info = { ...JSON.parse(req.body.Food_info) };
     }
-    let Recipes = req.body.Recipe.map((x, i) => {
+    let Recipes = JSON.parse(req.body.Recipe).map((x, i) => {
       try {
         return { ...x, stepIamge: req.files["stepImage"][i].filename };
       } catch {
@@ -176,7 +177,7 @@ router.patch(
         return getRepository(FoodInfo).findOne(req.params.id);
       })
       .then((rst) => {
-        let igrss = req.body.Ingredients.map((x) => {
+        let igrss = JSON.parse(req.body.Ingredients).map((x) => {
           return { ...x, foodInfo: rst };
         });
         return getRepository(Ingredients).insert(igrss);

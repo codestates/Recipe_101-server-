@@ -141,7 +141,6 @@ router.post("/signin", (req, res) => {
         64,
         "sha512",
         (err, key) => {
-          console.log(rst.password, key.toString("base64"));
           if (rst.password === key.toString("base64")) {
             const accesstoken = sign(
               { id: rst.id, username: rst.userName },
