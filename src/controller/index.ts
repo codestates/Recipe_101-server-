@@ -207,36 +207,44 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
         if (req.file) {
           data["userImage"] = req.file.filename;
         }
-
         getRepository(User)
-          .insert({
-            ...data,
+          .findOneOrFail({
+            where: { userName: data.userName },
           })
-          .then((rst) => {
-            const accesstoken = sign(
-              { id: rst.identifiers[0].id, username: req.body.username },
-              ACCESS_SECRET,
-              {
-                expiresIn: "30m",
-              }
-            );
-            const refreshtoken = sign(
-              { id: rst.identifiers[0].id, username: req.body.username },
-              REFRESH_SECRET,
-              {
-                expiresIn: "24h",
-              }
-            );
-            res.append("Set-Cookie", `refreshToken=${refreshtoken};`);
-            res.status(200).json({
-              data: {
-                accessToken: accesstoken,
-                message: "ok",
-              },
-            });
+          .then(() => {
+            res.status(400).send("동일한 아이디가 존재합니다.");
           })
-          .catch((err) => {
-            res.status(400).send("fail");
+          .catch(() => {
+            getRepository(User)
+              .insert({
+                ...data,
+              })
+              .then((rst) => {
+                const accesstoken = sign(
+                  { id: rst.identifiers[0].id, username: req.body.username },
+                  ACCESS_SECRET,
+                  {
+                    expiresIn: "30m",
+                  }
+                );
+                const refreshtoken = sign(
+                  { id: rst.identifiers[0].id, username: req.body.username },
+                  REFRESH_SECRET,
+                  {
+                    expiresIn: "24h",
+                  }
+                );
+                res.append("Set-Cookie", `refreshToken=${refreshtoken};`);
+                res.status(200).json({
+                  data: {
+                    accessToken: accesstoken,
+                    message: "ok",
+                  },
+                });
+              })
+              .catch((err) => {
+                res.status(400).send("fail");
+              });
           });
       }
     );
