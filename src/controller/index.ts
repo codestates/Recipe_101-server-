@@ -212,7 +212,7 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
             where: { userName: data.userName },
           })
           .then(() => {
-            res.status(400).send("동일한 아이디가 존재합니다.");
+            res.status(400).json({ message: "동일한 아이디가 존재합니다." });
           })
           .catch(() => {
             getRepository(User)
