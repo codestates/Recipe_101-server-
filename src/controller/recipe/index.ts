@@ -54,7 +54,7 @@ router.get("/:id", (req, res) => {
 
       let food_info = {
         id,
-        userId: user.id,
+        userName: user.userName,
         foodName,
         summary,
         nation,

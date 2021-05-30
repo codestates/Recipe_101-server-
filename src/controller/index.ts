@@ -187,6 +187,7 @@ router.post("/signin", (req, res) => {
 });
 
 router.post("/signup", upload.single("userImage"), (req, res) => {
+  console.log(req.body);
   crypto.randomBytes(64, (err, buf) => {
     crypto.pbkdf2(
       req.body.password,
