@@ -44,6 +44,9 @@ router.get("/", (req, res) => {
 
 router.patch("/", upload.single("userImage"), (req, res) => {
   let data = { ...req.body };
+  if (req.files) {
+    data = { ...data, userImage: req.files["userImage"][0].filename };
+  }
 
   if (req.body.password) {
     crypto.randomBytes(64, (err, buf) => {

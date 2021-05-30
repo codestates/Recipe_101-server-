@@ -201,7 +201,7 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
           password2: buf.toString("base64"),
           email: req.body.email,
           phone: req.body.phone,
-          userImage: "",
+          userImage: req.files ? req.files["userImage"][0].filename : "",
         };
         if (req.file) {
           data["userImage"] = req.file.filename;
