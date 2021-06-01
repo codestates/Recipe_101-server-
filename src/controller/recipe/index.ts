@@ -107,7 +107,11 @@ router.post(
       .findOne({ where: { id: res.locals.id } })
       .then((rst) => {
         return getRepository(FoodInfo).insert({
-          imgUrl: req.files ? req.files["foodImage"][0].filename : "",
+          imgUrl: req.files
+            ? process.env.SERVER_URL +
+              "/image/" +
+              req.files["foodImage"][0].filename
+            : "",
           user: rst,
           ...JSON.parse(req.body.Food_info),
         });
@@ -135,7 +139,9 @@ router.post(
           let stepImage = "";
           if (req.files) {
             stepImage = req.files["stepImages"]
-              ? req.files["stepImages"][i].filename
+              ? process.env.SERVER_URL +
+                "/image/" +
+                req.files["stepImages"][i].filename
               : "";
           }
           return { ...x, foodInfo: rst.foodInfo, stepImage };
@@ -160,14 +166,23 @@ router.patch(
     try {
       food_info = {
         ...JSON.parse(req.body.Food_info),
-        imgUrl: req.files["foodImage"][0].filename,
+        imgUrl:
+          process.env.SERVER_URL +
+          "/image/" +
+          req.files["foodImage"][0].filename,
       };
     } catch {
       food_info = { ...JSON.parse(req.body.Food_info) };
     }
     let Recipes = JSON.parse(req.body.Recipe).map((x, i) => {
       try {
-        return { ...x, stepIamge: req.files["stepImage"][i].filename };
+        return {
+          ...x,
+          stepIamge:
+            process.env.SERVER_URL +
+            "/image/" +
+            req.files["stepImage"][i].filename,
+        };
       } catch {
         return x;
       }

@@ -45,7 +45,11 @@ router.get("/", (req, res) => {
 router.patch("/", upload.single("userImage"), (req, res) => {
   let data = { ...req.body };
   if (req.files) {
-    data = { ...data, userImage: req.files["userImage"][0].filename };
+    data = {
+      ...data,
+      userImage:
+        process.env.SERVER_URL + "/image/" + req.files["userImage"][0].filename,
+    };
   }
 
   if (req.body.password) {
