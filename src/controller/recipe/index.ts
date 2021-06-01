@@ -22,7 +22,14 @@ const router = express.Router();
 router.get("/:id", (req, res) => {
   getRepository(FoodInfo)
     .findOne({
-      relations: ["igrs", "recipes", "user", "foodStore", "comment"],
+      relations: [
+        "igrs",
+        "recipes",
+        "user",
+        "foodStore",
+        "comment",
+        "comment.user",
+      ],
       where: { id: req.params.id },
     })
     .then((rst) => {
@@ -53,6 +60,10 @@ router.get("/:id", (req, res) => {
           return { cookingNo, cookingDc, stepImage, stepTip };
         }
       );
+      let Comment = comment.map(({ user, comment, createdAt, score }) => {
+        return { userName: user.userName, comment, createdAt, score };
+      });
+
       let init: number = 0;
       let score = comment.length
         ? comment.reduce((acc, x) => {
@@ -77,12 +88,10 @@ router.get("/:id", (req, res) => {
         createdAt,
         updatedAt,
       };
-      res
-        .status(200)
-        .json({
-          data: { food_info, Ingredients, Recipes, Comment: comment },
-          message: "ok",
-        });
+      res.status(200).json({
+        data: { food_info, Ingredients, Recipes, Comment },
+        message: "ok",
+      });
     })
     .catch((err) => {
       res.status(400).send("fail");
