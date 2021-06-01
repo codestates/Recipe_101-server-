@@ -22,7 +22,7 @@ const router = express.Router();
 router.get("/:id", (req, res) => {
   getRepository(FoodInfo)
     .findOne({
-      relations: ["igrs", "recipes", "user"],
+      relations: ["igrs", "recipes", "user", "foodStore", "comment"],
       where: { id: req.params.id },
     })
     .then((rst) => {
@@ -42,6 +42,8 @@ router.get("/:id", (req, res) => {
         igrs,
         user,
         recipes,
+        foodStore,
+        comment,
       } = rst;
       let Ingredients = igrs.map(({ name, type, cap }) => {
         return { name, type, cap };
@@ -51,6 +53,12 @@ router.get("/:id", (req, res) => {
           return { cookingNo, cookingDc, stepImage, stepTip };
         }
       );
+      let init: number = 0;
+      let score = comment.length
+        ? comment.reduce((acc, x) => {
+            return (acc += x.score);
+          }, init) / comment.length
+        : 0;
 
       let food_info = {
         id,
@@ -64,6 +72,8 @@ router.get("/:id", (req, res) => {
         qnt,
         level,
         imgUrl,
+        store: foodStore.length,
+        score: score,
         createdAt,
         updatedAt,
       };

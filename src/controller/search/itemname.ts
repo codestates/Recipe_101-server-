@@ -27,6 +27,7 @@ itemname.get("/:itemname", (req, res) => {
     "f.level AS level",
     "f.cookingTime AS cooking_time",
   ])
+    .groupBy("f.id")
     .execute()
     .then((rst) => {
       res.status(200).json({ data: { recipe: rst }, message: "ok" });
