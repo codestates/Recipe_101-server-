@@ -51,7 +51,7 @@ router.get("/user/:name", (req, res) => {
 
 router.post("/", token, (req, res) => {
   getRepository(User)
-    .findOne(res.locals.id)
+    .findOne(req.body.userName)
     .then((user) => {
       return getRepository(FoodInfo)
         .findOne(req.body.id)

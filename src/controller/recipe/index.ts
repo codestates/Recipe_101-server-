@@ -60,8 +60,8 @@ router.get("/:id", (req, res) => {
           return { cookingNo, cookingDc, stepImage, stepTip };
         }
       );
-      let Comment = comment.map(({ user, comment, createdAt, score }) => {
-        return { userName: user.userName, comment, createdAt, score };
+      let Comment = comment.map(({ id, user, comment, createdAt, score }) => {
+        return { id, userName: user.userName, comment, createdAt, score };
       });
 
       let init: number = 0;
