@@ -77,10 +77,12 @@ router.get("/:id", (req, res) => {
         createdAt,
         updatedAt,
       };
-      console.log({ food_info, Ingredients, Recipes });
       res
         .status(200)
-        .json({ data: { food_info, Ingredients, Recipes }, message: "ok" });
+        .json({
+          data: { food_info, Ingredients, Recipes, Comment: comment },
+          message: "ok",
+        });
     })
     .catch((err) => {
       res.status(400).send("fail");
