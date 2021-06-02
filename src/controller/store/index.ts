@@ -45,12 +45,12 @@ router.post("/", (req, res) => {
     });
 });
 
-router.delete("/", (req, res) => {
+router.delete("/:id", (req, res) => {
   getRepository(User)
     .findOne(res.locals.id)
     .then((user) => {
       return getRepository(FoodInfo)
-        .findOne(req.body.id)
+        .findOne(Number(req.params.id))
         .then((foodInfo) => {
           return getRepository(Store).delete({
             user: user,
