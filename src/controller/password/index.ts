@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/", (req, res) => {
   getRepository(User)
-    .findOne({ where: { id: res.locals.id, username: res.locals.username } })
+    .findOne({ where: { id: res.locals.id } })
     .then((rst) => {
       crypto.pbkdf2(
         req.body.password,

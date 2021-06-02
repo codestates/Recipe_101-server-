@@ -18,8 +18,8 @@ router.get("/food/:name", (req, res) => {
     .then((rst) => {
       let data = rst.comment.map((x) => {
         let userName = x.user.userName,
-          { id, comment, score } = x;
-        return { id, userName, comment, score };
+          { id, comment, score, createdAt } = x;
+        return { id, userName, comment, score, createdAt };
       });
 
       res.status(200).json({ data, message: "ok" });
@@ -38,8 +38,8 @@ router.get("/user/:name", (req, res) => {
     .then((rst) => {
       let data = rst.comment.map((x) => {
         let foodName = x.foodInfo.foodName,
-          { id, comment, score } = x;
-        return { id, foodName, comment, score };
+          { id, comment, score, createdAt } = x;
+        return { id, foodName, comment, score, createdAt };
       });
 
       res.status(200).json({ data, message: "ok" });

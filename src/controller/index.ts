@@ -47,7 +47,7 @@ router.get("/", (req, res) => {
   res.send("ok");
 });
 
-router.get("/signout", token, (req, res) => {
+router.get("/signout", (req, res) => {
   res.clearCookie("refreshToken");
   res.send("signout");
 });
@@ -208,9 +208,6 @@ router.post("/signup", upload.single("userImage"), (req, res) => {
               req.files["userImage"][0].filename
             : process.env.SERVER_URL + "/image/default.png",
         };
-        if (req.file) {
-          data["userImage"] = req.file.filename;
-        }
         getRepository(User)
           .findOneOrFail({
             where: { userName: data.userName },
