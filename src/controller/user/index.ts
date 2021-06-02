@@ -26,13 +26,24 @@ router.get("/", (req, res) => {
         "userImage",
         "createdAt",
         "updatedAt",
+        "foodInfo",
+        "follow",
+        "userStore",
+        "comment",
       ],
+      relations: ["foodInfo", "userStore", "comment", "follow"],
       where: { id: res.locals.id, userName: res.locals.username },
     })
     .then((rst) => {
       res.status(200).json({
         data: {
-          userinfo: { ...rst },
+          userinfo: {
+            ...rst,
+            foodInfo: rst.foodInfo.length,
+            follow: rst.follow.length,
+            comment: rst.comment.length,
+            userStore: rst.userStore.length,
+          },
         },
         meassge: "ok",
       });
