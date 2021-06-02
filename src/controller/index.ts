@@ -112,6 +112,7 @@ router.get("/recommend/:num", (req, res) => {
       "f.foodName AS food_name",
       "f.imgUrl AS food_img",
       "f.level AS level",
+      "f.nation AS nation",
       "f.cookingTime AS cooking_time",
       "f.summary AS summary",
       "count AS count",
