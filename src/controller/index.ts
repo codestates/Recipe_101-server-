@@ -147,7 +147,7 @@ router.post("/signin", (req, res) => {
               { id: rst.id, username: rst.userName },
               ACCESS_SECRET,
               {
-                expiresIn: "30m",
+                expiresIn: "1h",
               }
             );
             const refreshtoken = sign(

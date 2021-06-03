@@ -30,7 +30,7 @@ router.use("/", (req, res, next) => {
           if (err) {
             if (err.name === "TokenExpiredError") {
               const accessToken = sign({ id: decode.id }, ACCESS_SECRET, {
-                expiresIn: "30m",
+                expiresIn: "1h",
               });
               res.status(200).json({
                 data: { accessToken },
