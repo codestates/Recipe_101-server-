@@ -8,20 +8,24 @@ const router = express.Router();
 router.get("/:name", (req, res) => {
   getRepository(User)
     .findOne({
-      where: { userName: req.params.name },
+      relations: [
+        "follow",
+        "follow.target",
+        "follow.target.follower",
+        "follow.target.foodInfo",
+      ],
+      where: { id: 3 },
     })
     .then((rst) => {
-      return getRepository(Ff).find({
-        relations: ["target", "user"],
-        where: { user: { id: rst.id } },
-      });
-    })
-    .then((rst) => {
-      let follow = rst.map((x) => {
-        return x.target.userName;
+      let follow = rst.follow.map((x) => {
+        return {
+          userName: x.target.userName,
+          follower: x.target.follower.length,
+          recipes: x.target.foodInfo.length,
+        };
       });
       res.status(200).json({
-        users: [...follow],
+        follow,
         meassge: "ok",
       });
     })
