@@ -167,10 +167,10 @@ router.post("/signin", (req, res) => {
               data: {
                 accessToken: accesstoken,
                 userinfo: {
-                  username: rst.userName,
+                  userName: rst.userName,
                   email: rst.email,
                   phone: rst.phone,
-                  userimage: rst.userImage,
+                  userImage: rst.userImage,
                   createdAt: rst.createdAt,
                 },
               },
