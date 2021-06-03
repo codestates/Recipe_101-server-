@@ -19,22 +19,20 @@ const router = express.Router();
 router.get("/", (req, res) => {
   getRepository(User)
     .findOne({
+      relations: ["foodInfo", "userStore", "comment", "follow"],
       select: [
+        "id",
         "userName",
         "email",
         "phone",
         "userImage",
         "createdAt",
         "updatedAt",
-        "foodInfo",
-        "follow",
-        "userStore",
-        "comment",
       ],
-      relations: ["foodInfo", "userStore", "comment", "follow"],
       where: { id: res.locals.id, userName: res.locals.username },
     })
     .then((rst) => {
+      console.log(rst);
       res.status(200).json({
         data: {
           userinfo: {
@@ -49,6 +47,7 @@ router.get("/", (req, res) => {
       });
     })
     .catch((err) => {
+      console.log(err);
       res.status(400).send("fail");
     });
 });
