@@ -16,15 +16,15 @@ router.use("/", (req, res, next) => {
     req.headers["authorization"].split(" ").length === 2
       ? req.headers["authorization"].split(" ")[1]
       : undefined;
+
   if (req.cookies.iskakao) {
     if (!refreshToken) {
       res.status(401).send("Unauthorized");
     } else {
       axios
-        .get("https://kapi.kakao.com/v2/user/me", {
+        .get("https://kapi.kakao.com/v1/user/access_token_info", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            "Content-type": "application/x-www-form-urlencoded; charset=utf-8",
           },
         })
         .then((rst) => {
@@ -37,6 +37,7 @@ router.use("/", (req, res, next) => {
           next();
         })
         .catch((err) => {
+          // console.log(err);
           res.status(200).send("invalid user");
         });
     }

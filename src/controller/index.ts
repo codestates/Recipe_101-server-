@@ -49,9 +49,28 @@ router.get("/", (req, res) => {
   res.send("ok");
 });
 
-router.get("/signout", (req, res) => {
-  res.clearCookie("refreshToken");
-  res.send("signout");
+router.get("/signout", token, (req, res) => {
+  let accessToken =
+    req.headers["authorization"] &&
+    req.headers["authorization"].split(" ").length === 2
+      ? req.headers["authorization"].split(" ")[1]
+      : undefined;
+  if (req.cookies.iskakao) {
+    axios
+      .get("https://kapi.kakao.com/v2/user/access_token_info", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-type": "application/x-www-form-urlencoded; charset=utf-8",
+        },
+      })
+      .then((rst) => {
+        res.clearCookie("refreshToken");
+        res.send("signout");
+      });
+  } else {
+    res.clearCookie("refreshToken");
+    res.send("signout");
+  }
 });
 
 router.get("/image/:url", (req, res) => {
@@ -284,15 +303,15 @@ router.post("/kakao", (req, res) => {
       [AccessToken, RefreshToken] = [access_token, refresh_token];
       res.cookie(`refreshToken=${refresh_token};`, "set Cookie", {
         maxAge: 24 * 6 * 60 * 10000,
-        sameSite: "none",
-        httpOnly: true,
-        secure: true,
+        // sameSite: "none",
+        // httpOnly: true,
+        // secure: true,
       });
       res.cookie(`iskakao=${true};`, "set Cookie", {
         maxAge: 24 * 6 * 60 * 10000,
-        sameSite: "none",
-        httpOnly: true,
-        secure: true,
+        // sameSite: "none",
+        // httpOnly: true,
+        // secure: true,
       });
       return axios.get("https://kapi.kakao.com/v2/user/me", {
         headers: {
