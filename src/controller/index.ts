@@ -19,6 +19,8 @@ import axios from "axios";
 import multer = require("multer");
 import { URLSearchParams } from "url";
 axios.defaults.withCredentials = true;
+const httpsmode = {};
+
 const mime = require("mime-types");
 
 const upload = multer({
@@ -281,6 +283,12 @@ router.post("/kakao", (req, res) => {
       let { access_token, refresh_token } = rst.data;
       [AccessToken, RefreshToken] = [access_token, refresh_token];
       res.cookie(`refreshToken=${refresh_token};`, "set Cookie", {
+        maxAge: 24 * 6 * 60 * 10000,
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
+      });
+      res.cookie(`iskakao=${true};`, "set Cookie", {
         maxAge: 24 * 6 * 60 * 10000,
         sameSite: "none",
         httpOnly: true,

@@ -32,7 +32,6 @@ router.get("/", (req, res) => {
       where: { id: res.locals.id, userName: res.locals.username },
     })
     .then((rst) => {
-      console.log(rst);
       res.status(200).json({
         data: {
           userinfo: {
@@ -58,54 +57,18 @@ router.patch("/", upload.single("userImage"), (req, res) => {
     data = {
       ...data,
       userImage:
-        process.env.SERVER_URL + "/image/" + req.files["userImage"][0].filename,
+        process.env.SERVER_URL + "/image/" + req.file["userImage"][0].filename,
     };
   }
-
-  if (req.body.password) {
-    crypto.randomBytes(64, (err, buf) => {
-      crypto.pbkdf2(
-        req.body.password,
-        buf.toString("base64"),
-        121234,
-        64,
-        "sha512",
-        (err, key) => {
-          let data = {
-            ...req.body,
-            password: key.toString("base64"),
-            password2: buf.toString("base64"),
-          };
-          if (req.file) {
-            data["userImage"] = req.file.filename;
-          }
-          getRepository(User)
-            .update(res.locals.id, { ...data })
-            .then((rst) => {
-              res.status(200).json({ message: "information updated" });
-            })
-            .catch((err) => {
-              res.status(400).send("fail");
-            });
-        }
-      );
+  console.log(data, req.file, req.files);
+  getRepository(User)
+    .update(res.locals.id, { ...data })
+    .then((rst) => {
+      res.status(200).json({ message: "information updated" });
+    })
+    .catch((err) => {
+      res.status(400).send("fail");
     });
-  } else {
-    let data = {
-      ...req.body,
-    };
-    if (req.file) {
-      data["userImage"] = req.file.filename;
-    }
-    getRepository(User)
-      .update(res.locals.id, { ...data })
-      .then((rst) => {
-        res.status(200).json({ message: "information updated" });
-      })
-      .catch((err) => {
-        res.status(400).send("fail");
-      });
-  }
 });
 
 router.delete("/", (req, res) => {
