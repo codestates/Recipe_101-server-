@@ -303,15 +303,15 @@ router.post("/kakao", (req, res) => {
       [AccessToken, RefreshToken] = [access_token, refresh_token];
       res.cookie(`refreshToken=${refresh_token};`, "set Cookie", {
         maxAge: 24 * 6 * 60 * 10000,
-        // sameSite: "none",
-        // httpOnly: true,
-        // secure: true,
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
       });
       res.cookie(`iskakao=${true};`, "set Cookie", {
         maxAge: 24 * 6 * 60 * 10000,
-        // sameSite: "none",
-        // httpOnly: true,
-        // secure: true,
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
       });
       return axios.get("https://kapi.kakao.com/v2/user/me", {
         headers: {

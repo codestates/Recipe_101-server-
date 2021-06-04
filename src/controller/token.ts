@@ -10,7 +10,6 @@ const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
 router.use("/", (req, res, next) => {
   let refreshToken = req.cookies.refreshToken;
-  console.log(req.cookies);
   let accessToken =
     req.headers["authorization"] &&
     req.headers["authorization"].split(" ").length === 2
