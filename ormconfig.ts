@@ -1,4 +1,4 @@
-require("dotenv").config();
+import "dotenv/config";
 module.exports = {
   type: process.env.DATABASE_TYPE,
   // host: process.env.DATABASE_HOST_LOCAL,
